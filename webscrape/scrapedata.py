@@ -197,7 +197,7 @@ def crawl_html(url):
     response = requests.get(url)
     response.encoding = response.apparent_encoding
     html = response.text
-    time.sleep(4)
+    time.sleep(1)
     return html
 
 def create_csv(urls):
