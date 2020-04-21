@@ -6,7 +6,8 @@ from webscrape import scrapeurl
 
 def execute(year, mon):
     urls = scrapeurl.get_urls(year, mon)
-    scrapedata.create_csv(year, mon, urls)
+    if not len(urls)==0:
+        scrapedata.create_csv(year, mon, urls)
 
 
 if __name__ == "__main__":
