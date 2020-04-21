@@ -10,10 +10,7 @@ import re
 import csv
 import time
 
-def get_urls(args):
-    """
-    
-    """
+def get_urls(year, mon):
     urls = []
     options = Options()
     options.add_argument('--headless')
@@ -26,10 +23,10 @@ def get_urls(args):
 
     #?????
 
-    start_year = args[1]
-    start_mon = args[2]
-    end_year = args[3]
-    end_mon = args[4]
+    start_year = year
+    start_mon = mon
+    end_year = year
+    end_mon = mon
 
     start_year_element = driver.find_element_by_name('start_year')
     start_year_select = Select(start_year_element)
