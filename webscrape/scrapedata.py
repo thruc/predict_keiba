@@ -59,14 +59,9 @@ horse_data_columns=[
     'tamer_id',
     'owner_id'
 ]
-CSV_DIR = "csv"
+
 
 def scrape_race_and_horse_data_by_html(race_id, html):
-    """
-    HTMLファイルからレースと馬のデータを取得
-    戻り値1: list型 レースデータ
-    戻り値2: list型 馬データ
-    """
     race_list = [race_id]
     horse_list_list = []
     soup = BeautifulSoup(html, 'html.parser')
@@ -189,26 +184,19 @@ def scrape_race_and_horse_data_by_html(race_id, html):
 
     return race_list, horse_list_list
 
-def crawl_html(url):
-    """
-    URLからHTMLファイルを取得する
-    戻り値: str型　HTMLのデータ
-    """
+def request_html(url):
     response = requests.get(url)
     response.encoding = response.apparent_encoding
     html = response.text
     time.sleep(1)
     return html
 
-def create_csv(urls):
-    """
-    URLからレースと馬のデータを取得しCSVに保存する
-    戻り値: なし
-    """
+def create_csv(year, mon, urls):
+    CSV_DIR = "csv/"+str(year)
     if not os.path.isdir(CSV_DIR):
         os.makedirs(CSV_DIR)
-    save_race_csv = CSV_DIR+"/race.csv"
-    horse_race_csv = CSV_DIR+"/horse.csv"
+    save_race_csv = CSV_DIR+"/race_"+str(mon)+".csv"
+    horse_race_csv = CSV_DIR+"/horse_"+str(mon)+".csv"
     time.sleep(2)
     race_df = pd.DataFrame(columns=race_data_columns )
     horse_df = pd.DataFrame(columns=horse_data_columns )
@@ -220,11 +208,11 @@ def create_csv(urls):
         list = url.split("/")
         race_id = list[-2]
         
-        html = crawl_html(url)
+        html = request_html(url)
         race_list, horse_list_list = scrape_race_and_horse_data_by_html(race_id, html)
         #horse_data
         for horse_list in horse_list_list:
-            horse_se = pd.Series( horse_list, index=horse_df.columns)
+            horse_se = pd.Series(horse_list, index=horse_df.columns)
             horse_df = horse_df.append(horse_se, ignore_index=True)
         #race_data
         race_se = pd.Series(race_list, index=race_df.columns )
