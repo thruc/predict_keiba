@@ -3,6 +3,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select,WebDriverWait
 from selenium.webdriver.chrome.options import Options
+from selenium.common.exceptions import NoSuchElementException
 from selenium import webdriver
 import chromedriver_binary
 import sys
@@ -41,7 +42,7 @@ def get_urls(year, mon):
     end_mon_select = Select(end_mon_element)
     end_mon_select.select_by_value(str(end_mon))
 
-    for i in range(1,11):
+    for i in range(5,6):
         terms = driver.find_element_by_id("check_Jyo_"+ str(i).zfill(2))
         terms.click()
     #???????????100????
@@ -51,12 +52,15 @@ def get_urls(year, mon):
 
     frm = driver.find_element_by_css_selector("#db_search_detail_form > form")
     frm.submit()
-    time.sleep(10)
+    time.sleep(5)
     wait.until(EC.presence_of_all_elements_located)
     while True:
-        time.sleep(10)
         wait.until(EC.presence_of_all_elements_located)
-        all_rows = driver.find_element_by_class_name('race_table_01').find_elements_by_tag_name("tr")
+
+        try:
+            all_rows = driver.find_element_by_class_name('race_table_01').find_elements_by_tag_name("tr")
+        except NoSuchElementException:
+            break
         for row in range(1, len(all_rows)):
             race_href=all_rows[row].find_elements_by_tag_name("td")[4].find_element_by_tag_name("a").get_attribute("href")
             urls.append(race_href)
