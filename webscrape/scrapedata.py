@@ -119,10 +119,13 @@ def scrape_race_and_horse_data_by_html(race_id, html):
 
     pay_back2 = pay_back_tables[1].findAll('tr')
     # wide 1&2
-    wide = pay_back2[0].find("td", class_="txt_r")
     tmp = []
-    for string in wide.strings:
-        tmp.append(string)
+    try:
+        wide = pay_back2[0].find("td", class_="txt_r")
+        for string in wide.strings:
+            tmp.append(string)
+    except IndexError:
+        tmp = ["0","0","0"]
     for i in range(3):
         try:
             race_list.append(tmp[i]) # hukuren_first or second or third
@@ -130,9 +133,14 @@ def scrape_race_and_horse_data_by_html(race_id, html):
             race_list.append("0")
 
     # umatan
-    race_list.append(pay_back2[1].find("td", class_="txt_r").get_text()) #umatan
-
-    race_list.append(pay_back2[2].find("td", class_="txt_r").get_text()) #renhuku3
+    try:
+        race_list.append(pay_back2[1].find("td", class_="txt_r").get_text()) #umatan
+    except IndexError:
+        race_list.append("0")
+    try:
+        race_list.append(pay_back2[2].find("td", class_="txt_r").get_text()) #renhuku3
+    except IndexError:
+        race_list.append("0")
     try:
         race_list.append(pay_back2[3].find("td", class_="txt_r").get_text()) #rentan3
     except IndexError:
@@ -218,7 +226,7 @@ def create_csv(year, mon, urls):
         race_se = pd.Series(race_list, index=race_df.columns )
         race_df = race_df.append(race_se, ignore_index=True )
 
-        #250‚²‚Æ‚Éƒf[ƒ^‚ğCSV‚É•ÏŠ·‚µ‚Ä‚¨‚­
+        #250ï¿½ï¿½ï¿½Æ‚Éƒfï¿½[ï¿½^ï¿½ï¿½CSVï¿½É•ÏŠï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½
         if count == 250:
             count = 0
             race_df.to_csv(save_race_csv, header=True, index=False)
