@@ -1,2 +1,8 @@
 csv/*
 
+
+and.json
+cleaned_race_data.csv
+result_data.csv
+train_data.csv
+model.h5
